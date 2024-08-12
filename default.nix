@@ -17,7 +17,7 @@ pkgs.stdenv.mkDerivation rec {
     dpkg
   ];
 
-  buildInputs = [
+  buildInputs = with pkgs; [
     openssl
   ];
 
