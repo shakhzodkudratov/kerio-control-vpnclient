@@ -50,16 +50,19 @@
           installPhase = ''
             mkdir -p $out
             cp -r * $out/
+            mv $out/usr/sbin $out/bin
           '';
         };
 
       };
 
       # Provide some binary packages for selected system types.
-      packages = forAllSystems (system:
-        {
-          inherit (nixpkgsFor.${system}) kerio-control-vpnclient;
-        });
+      packages = forAllSystems
+        (system:
+          {
+            inherit (nixpkgsFor.${system}) kerio-control-vpnclient;
+            default = (nixpkgsFor.${system}).kerio-control-vpnclient;
+          });
 
       # The default package for 'nix build'. This makes sense if the
       # flake provides only one package or there is a clear "main"
