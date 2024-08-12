@@ -1,55 +1,30 @@
 {
-  description = "Kerio Control VPN Client";
+  description = "Kerio Control VPN Client (Linux x86_64 only)";
 
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
-    flake-utils.url = "github:numtide/flake-utils";
-  };
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
 
   outputs =
-    { self
-    , nixpkgs
-    , flake-utils
-    , ...
-    } @ inputs:
+    { self, nixpkgs, ... } @ inputs:
     let
       lib = nixpkgs.lib;
+
       systems = [
         "x86_64-linux"
       ];
 
+      forEachSystem = f: lib.genAttrs systems (system: f system);
       forAllSystems = nixpkgs.lib.genAttrs systems;
-      forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
-
-      pkgsFor = lib.genAttrs systems (system:
-        import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        });
-
-      devShellFor = system:
+    in
+    {
+      # nixosModules.kerio-control-vpnclient = import ./module.nix self;
+      packages = forAllSystems (system:
         let
           pkgs = import nixpkgs {
             inherit system;
-            config.allowUnfree = true;
           };
-          script = import ./shell.nix { inherit pkgs; };
         in
-        script;
-    in
-    {
-      # Nix script formatter
-      formatter =
-        forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
-
-      # Development environment
-      devShells = lib.mapAttrs (system: _: devShellFor system) (lib.genAttrs systems { });
-
-      # Output package
-      packages = forAllSystems (system: {
-        default = pkgsFor.${system}.callPackage
-          ./.
-          { };
-      });
+        {
+          default = pkgs.callPackage ./. { };
+        });
     };
 }

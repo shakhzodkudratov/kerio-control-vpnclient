@@ -22,16 +22,16 @@ pkgs.stdenv.mkDerivation rec {
     dialog
     util-linux
     libxcrypt-legacy
+    openssl
   ];
 
   installPhase = ''
-    mkdir -p $out/lib
-    mkdir -p $out/bin
-    mkdir -p $out/etc/systemd/system
+    ls -lah
+      mkdir -p $out/lib
+      mkdir -p $out/bin
 
-    cp -r ./usr/lib/* $out/lib/
-    cp -r ./usr/sbin/* $out/bin/
-    cp -r ./lib/systemd/system/* $out/etc/systemd/system/
+      cp -r ./usr/lib/* $out/lib/
+      cp -r ./usr/sbin/* $out/bin/
   '';
 
   meta = with lib; {
