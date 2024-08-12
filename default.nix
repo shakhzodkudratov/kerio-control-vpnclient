@@ -28,6 +28,8 @@ pkgs.stdenv.mkDerivation rec {
     cp -r ./usr/lib/* $out/lib/
     cp -r ./usr/sbin/* $out/bin/
     cp -r ./lib/systemd/system/* $out/etc/systemd/system/
+
+    export LD_LIBRARY_PATH=$out/zoom/opt/zoom/
   '';
 
   meta = with lib; {
