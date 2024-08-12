@@ -18,6 +18,7 @@ pkgs.stdenv.mkDerivation rec {
   ];
 
   buildInputs = [
+    openssl
   ];
 
   installPhase = ''
