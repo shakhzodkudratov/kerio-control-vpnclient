@@ -21,7 +21,7 @@ pkgs.stdenv.mkDerivation rec {
     procps
     dialog
     util-linux
-    libxcrypt
+    libxcrypt-legacy
   ];
 
   installPhase = ''
