@@ -1,4 +1,8 @@
-{ pkgs ? import <nixpkgs> { }, ... }:
+{
+  autoPatchelfHook,
+  pkgs ? import <nixpkgs> { },
+  ...
+}:
 let
   lib = pkgs.lib;
 in
@@ -14,10 +18,17 @@ pkgs.stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = with pkgs; [
+    autoPatchelfHook
     dpkg
   ];
 
   buildInputs = with pkgs; [
+    libgcc
+    libstdcxx5
+    stdenv.cc.cc.lib
+
+    curl
+
     procps
     dialog
     util-linux
@@ -26,18 +37,17 @@ pkgs.stdenv.mkDerivation rec {
   ];
 
   installPhase = ''
-    ls -lah
-      mkdir -p $out/lib
-      mkdir -p $out/bin
-
-      cp -r ./usr/lib/* $out/lib/
-      cp -r ./usr/sbin/* $out/bin/
+    mkdir -p $out
+    cp -r . $out
   '';
 
   meta = with lib; {
     homepage = "http://www.kerio.com/control";
     description = "Kerio Control VPN client for corporate networks.";
-    licencse = licenses.mit;
+    licencse = {
+      shortName = "EULA";
+      free = false;
+    };
     platforms = with platforms; linux;
   };
 }
